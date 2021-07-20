@@ -4,11 +4,12 @@ from telegram.ext import Updater # 更新者
 from telegram.ext import CommandHandler, CallbackQueryHandler # 註冊處理器 一般用 回答用
 from telegram.ext import MessageHandler, Filters # Filters過濾訊息
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton # 互動式按鈕
+import time
 #import telegram
 
 
 # 設定 token
-token = '1766520232:AAH3mVMifGHjUqPPb38YjdCXn2vLfHXp7aA'
+token = '1834735572:AAHKCT_-Jv6XNKMt704guggO2fkqbvFQaco'
 
 # 初始化bot
 updater = Updater(token=token, use_context=False)
@@ -22,53 +23,42 @@ dispatcher = updater.dispatcher
 def start(bot, update): # 新增指令/start
     message = update.message
     chat = message['chat']
-    update.message.reply_text(text='HI  ' + str(chat['id']))    
-    
+    update.message.reply_text(text='HI  ' + "阿嬤你好")    
+    update.message.reply_text(text="輸入這次全部的電費 第一間的度數 第二間的度數 第三間的度數")
+    time.sleep(5)
+    message = update.message
+    totla_cost = message.text 
 
-def blog(bot, update): # /btc 互動式按鈕
-    update.message.reply_text('量化交易中心',
-                              reply_markup = InlineKeyboardMarkup([[
-                                  InlineKeyboardButton('恩哥Python量化教室', 
-                                                       url = 'https://pixnashpython.pixnet.net/blog'),
-                                  InlineKeyboardButton('你的網路生活教授Nash', 
-                                                       url = 'https://pixnashlife.pixnet.net/blog')
-                                  ]])
-                              )
-qt = {
-    'Q1': '你是誰?',
-    'Q2': '有新文章嗎?',
-    'Q3': '今天會下雨嗎?'
-        } 
 
-def question(bot, update):
-    update.message.reply_text('你問我答',
-        reply_markup = InlineKeyboardMarkup([[
-                InlineKeyboardButton(qt, callback_data = name) for name, qt in qt.items()
-            ]]))
-    
-def answer(bot, update):
-    yours = update.callback_query.data # 一樣從update中抽取資料
-    update.callback_query.edit_message_text(text=yours)
 
 
 def echo(bot, update): # 其他訊息
-    message = update.message
-    text = message.text + '  <<< 這個部份我就不太懂了~'
-    update.message.reply_text(text=text)
     
+    message = update.message.text
+    text =message 
+    text = text.split(' ')
+    totalcost=text[0]
+    onedegree=text[1]
+    twodegree=text[2]
+    threedegree=text[3]
+    totalcost=eval(totalcost)
+    onedegree=eval(onedegree)
+    twodegree=eval(twodegree)
+    threedegree=eval(threedegree)
+    totaldegree=onedegree+twodegree+threedegree
+    onecost=totalcost*(onedegree/totaldegree)
+    twocost=totalcost*(twodegree/totaldegree)
+    threecost=totalcost*(threedegree/totaldegree)
+    text="第一間"+str(onecost)+"第二間"+str(twocost)+"第三間"+str(threecost)
+    update.message.reply_text(text=text)
+    print(update)
 
 # 把handler加入dispatcher()
 dispatcher.add_handler(CommandHandler('start', start))
-dispatcher.add_handler(CommandHandler('blog', blog))
-dispatcher.add_handler(CommandHandler('question', question)) # 問題
-dispatcher.add_handler(CallbackQueryHandler(answer)) # 回答問題
 dispatcher.add_handler(MessageHandler(Filters.text, echo)) # Filters如果是文字就呼叫start
 
 
-# 發指定對象訊息
-who = '1471678851'
-text = '我是機器人可以問我問題喔!'
-dispatcher.bot.send_message(chat_id=who, text=text) # 發送訊息
+
 
 
 # 開始運作bot

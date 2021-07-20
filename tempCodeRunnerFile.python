@@ -1,0 +1,65 @@
+from telegram.ext import Updater # 更新者
+from telegram.ext import CommandHandler, CallbackQueryHandler # 註冊處理器 一般用 回答用
+from telegram.ext import MessageHandler, Filters # Filters過濾訊息
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton # 互動式按鈕
+import time
+#import telegram
+
+# 設定 token
+token = '1834735572:AAHKCT_-Jv6XNKMt704guggO2fkqbvFQaco'
+
+# 初始化bot
+updater = Updater(token=token, use_context=False)
+
+
+# 設定一個dispatcher(調度器)
+dispatcher = updater.dispatcher
+
+
+# 定義收到訊息後的動作(新增handler)
+def start(bot, update): 
+    message = update.message
+    chat = message['chat']# 新增指令/start
+    update.message.reply_text(text='HI  ' + "阿嬤你好" + "\n" +'我是設計給阿嬤的算水電費的聊天機器人喔')    
+    print(update)
+    update.message.reply_text('阿嬤要選擇哪個服務',
+                              reply_markup=InlineKeyboardMarkup([[
+                                  InlineKeyboardButton(text='算水電費', callback_data='McFlurry')],  [InlineKeyboardButton(text='Nugget', callback_data='Nugget')]]))
+    echo(bot,update)
+
+    
+    
+def echo(bot, update):
+    global totla_cost    
+    update.message.reply_text(text="輸入這次全部的電費")
+    time.sleep(5)
+    totla_cost = update.message.text 
+    print(totla_cost)
+    print(update)
+def echo4(bot, update): 
+    update.message.reply_text(text="輸入這次全部的度數")
+    message = update.message
+    total_degree = message.text
+    update.message.reply_text(text="輸入這次第一間用的度數")
+    message = update.message
+    one_degree = message.text
+    update.message.reply_text(one_degree)
+    print(totla_cost)
+    print(update)
+    global two_degree
+    message = update.message
+    update.message.reply_text(text="輸入這次第二間用的度數")
+    two_degree = message.text
+    
+def echo5(bot, update):
+    global three_degree     
+    message = update.message  
+    update.message.reply_text(text="輸入這次第三間用的度數")
+    three_degree = message.text
+    update.message.reply_text(text=total_cost)
+
+
+
+
+dispatcher.add_handler(CommandHandler('start', start))
+updater.start_polling()
